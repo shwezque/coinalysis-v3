@@ -23,18 +23,9 @@ export const fallbackDataService = {
         circulating_supply: 19500000,
         total_supply: 21000000,
         max_supply: 21000000,
-        ath: 69000,
-        ath_change_percentage: -2.9,
-        ath_date: '2021-11-10T14:24:11.849Z',
-        atl: 67.81,
-        atl_change_percentage: 98750,
-        atl_date: '2013-07-06T00:00:00.000Z',
-        roi: null,
-        last_updated: new Date().toISOString(),
         sparkline_in_7d: {
           price: Array(168).fill(0).map((_, i) => 65000 + Math.random() * 4000)
         },
-        price_change_percentage_24h_in_currency: 1.5,
         price_change_percentage_7d_in_currency: 5.2,
         price_change_percentage_30d_in_currency: 15.3
       },
@@ -57,18 +48,9 @@ export const fallbackDataService = {
         circulating_supply: 120000000,
         total_supply: 120000000,
         max_supply: null,
-        ath: 4878,
-        ath_change_percentage: -28.2,
-        ath_date: '2021-11-10T14:24:19.604Z',
-        atl: 0.432979,
-        atl_change_percentage: 807500,
-        atl_date: '2015-10-20T00:00:00.000Z',
-        roi: null,
-        last_updated: new Date().toISOString(),
         sparkline_in_7d: {
           price: Array(168).fill(0).map((_, i) => 3400 + Math.random() * 200)
         },
-        price_change_percentage_24h_in_currency: 1.4,
         price_change_percentage_7d_in_currency: 3.8,
         price_change_percentage_30d_in_currency: 12.5
       },
@@ -82,15 +64,7 @@ export const fallbackDataService = {
       total_volume: 100000000000,
       market_cap_percentage: {
         btc: 52,
-        eth: 16.8,
-        usdt: 3.3,
-        bnb: 2.5,
-        sol: 2.1,
-        xrp: 1.9,
-        usdc: 1.8,
-        steth: 1.2,
-        ada: 1.1,
-        avax: 0.9
+        eth: 16.8
       },
       market_cap_change_percentage_24h_usd: 1.8
     };
