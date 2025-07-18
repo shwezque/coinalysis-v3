@@ -23,10 +23,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Endpoint is required' });
   }
 
+  // Ensure endpoint starts with /
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
   try {
-    // Ensure endpoint starts with /
-    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    
     // Use native fetch instead of axios to avoid dependency issues
     const queryString = new URLSearchParams(params as any).toString();
     const url = `${COINGECKO_API_BASE}${cleanEndpoint}${queryString ? `?${queryString}` : ''}`;
@@ -75,7 +75,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       endpoint: endpoint,
       details: isProduction ? undefined : {
         stack: error.stack,
-        url: `${COINGECKO_API_BASE}${cleanEndpoint || endpoint}`
+        url: `${COINGECKO_API_BASE}${cleanEndpoint}`
       }
     });
   }
