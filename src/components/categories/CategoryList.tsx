@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useCategories } from '../../hooks/useTokenData';
 import CategoryRow from './CategoryRow';
 import { Grid3X3 } from 'lucide-react';
+import { Category } from '../../types';
 
 const CategoryList: React.FC = () => {
   const { data: categories, isLoading, error } = useCategories();
   const [sortBy, setSortBy] = useState<'market_cap' | 'change' | 'volume'>('market_cap');
 
-  const sortedCategories = categories?.slice().sort((a, b) => {
+  const sortedCategories = (categories as Category[] | undefined)?.slice().sort((a, b) => {
     switch (sortBy) {
       case 'change':
         return b.market_cap_change_24h - a.market_cap_change_24h;

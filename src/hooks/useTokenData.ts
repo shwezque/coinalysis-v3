@@ -1,44 +1,62 @@
 import { useQuery } from '@tanstack/react-query';
 import { coinGeckoService } from '../services/coinGeckoService';
 import { Token, MarketStats, Category } from '../types';
-import { useAutoUpdate } from './useAutoUpdate';
 
 export const useTokenData = (page: number = 1, perPage: number = 100) => {
-  const { isAutoUpdateEnabled, updateInterval } = useAutoUpdate();
-  
-  return useQuery<Token[], Error>({
+  return useQuery({
     queryKey: ['tokens', page, perPage],
     queryFn: () => coinGeckoService.getTokens(page, perPage),
-    staleTime: 30000, // 30 seconds
-    refetchInterval: isAutoUpdateEnabled ? updateInterval * 1000 : false,
+    staleTime: Infinity, // Never consider data stale
+    gcTime: Infinity, // Keep in cache forever
+    refetchInterval: false, // Disable auto-refresh
+    refetchOnWindowFocus: false, // Disable refetch on window focus
+    refetchOnMount: false, // Don't refetch on mount if data exists
   });
 };
 
 export const useMarketStats = () => {
-  const { isAutoUpdateEnabled, updateInterval } = useAutoUpdate();
-  
-  return useQuery<MarketStats, Error>({
+  return useQuery({
     queryKey: ['marketStats'],
-    queryFn: coinGeckoService.getMarketStats,
-    staleTime: 60000, // 1 minute
-    refetchInterval: isAutoUpdateEnabled ? updateInterval * 1000 : false,
+    queryFn: () => coinGeckoService.getMarketStats(),
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };
 
 export const useSearchTokens = (query: string) => {
-  return useQuery<Token[], Error>({
+  return useQuery({
     queryKey: ['searchTokens', query],
     queryFn: () => coinGeckoService.searchTokens(query),
     enabled: query.length > 0,
-    staleTime: 30000,
+    staleTime: Infinity,
+    gcTime: 300000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 };
 
 export const useCategories = () => {
-  return useQuery<Category[], Error>({
+  return useQuery({
     queryKey: ['categories'],
-    queryFn: coinGeckoService.getCategories,
-    staleTime: 300000, // 5 minutes
-    refetchInterval: 300000, // Auto-refresh every 5 minutes
+    queryFn: () => coinGeckoService.getCategories(),
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+};
+
+export const useAllTokens = () => {
+  return useQuery({
+    queryKey: ['allTokens'],
+    queryFn: () => coinGeckoService.getTokens(1, 250),
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 };

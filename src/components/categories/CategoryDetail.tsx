@@ -1,16 +1,16 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTokenData } from '../../hooks/useTokenData';
+import { useAllTokens } from '../../hooks/useTokenData';
 import TokenRow from '../tokens/TokenRow';
 import { useStarredTokens } from '../../hooks/useStarredTokens';
-import { ArrowLeft, Layers, Brain, Globe, Image, Coins } from 'lucide-react';
+import { ArrowLeft, Layers, Brain, Globe, Image, Coins, Building, Laugh, Network } from 'lucide-react';
 import { formatCurrency, formatPercentage } from '../../utils/formatters';
 import { Token } from '../../types';
 
 const CategoryDetail: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
-  const { data: allTokens } = useTokenData(1, 100);
+  const { data: allTokens } = useAllTokens();
   const { toggleStar, isStarred } = useStarredTokens();
 
   // Predefined categories matching the ones in CategoriesPage
@@ -61,16 +61,26 @@ const CategoryDetail: React.FC = () => {
       marketCap: 12345678901,
       marketCapChange24h: 4.56,
       volume24h: 2345678901,
-      tokens: ['ondo', 'mpl', 'rio', 'astr'],
-      icon: <Globe className="w-6 h-6" />,
+      tokens: ['ondo', 'mpl', 'rio', 'astr', 'cpool', 'tru'],
+      icon: <Building className="w-6 h-6" />,
       color: 'orange',
+    },
+    depin: {
+      name: 'DePIN',
+      description: 'Decentralized Physical Infrastructure Networks',
+      marketCap: 25000000000,
+      marketCapChange24h: 5.2,
+      volume24h: 1500000000,
+      tokens: ['fil', 'ar', 'hnt', 'rndr', 'iotx', 'mobile', 'honey', 'dimo'],
+      icon: <Globe className="w-6 h-6" />,
+      color: 'indigo',
     },
   };
 
   const category = categoryId ? categories[categoryId as keyof typeof categories] : null;
 
   // Filter tokens based on category
-  const categoryTokens = allTokens?.filter(token => 
+  const categoryTokens = (allTokens as Token[] | undefined)?.filter(token => 
     category?.tokens.includes(token.symbol.toLowerCase())
   ) || [];
 
@@ -81,6 +91,7 @@ const CategoryDetail: React.FC = () => {
       green: 'bg-green-500',
       pink: 'bg-pink-500',
       orange: 'bg-orange-500',
+      indigo: 'bg-indigo-500',
     };
     return colorMap[color as keyof typeof colorMap] || colorMap.blue;
   };

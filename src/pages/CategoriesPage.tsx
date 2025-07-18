@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layers, TrendingUp, Brain, Globe, Image, Coins } from 'lucide-react';
+import { Layers, TrendingUp, Brain, Globe, Image, Coins, Building } from 'lucide-react';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
 
 interface Category {
@@ -72,8 +72,19 @@ const CategoriesPage: React.FC = () => {
       marketCapChange24h: 4.56,
       volume24h: 2345678901,
       topCoins: ['ONDO', 'MPL', 'RIO', 'ASTR', 'DUSK'],
-      icon: <Globe className="w-6 h-6" />,
+      icon: <Building className="w-6 h-6" />,
       color: 'orange',
+    },
+    {
+      id: 'depin',
+      name: 'DePIN',
+      description: 'Decentralized Physical Infrastructure Networks',
+      marketCap: 25000000000,
+      marketCapChange24h: 5.2,
+      volume24h: 1500000000,
+      topCoins: ['FIL', 'AR', 'HNT', 'RNDR', 'IOTX'],
+      icon: <Globe className="w-6 h-6" />,
+      color: 'indigo',
     },
   ];
 
@@ -84,6 +95,7 @@ const CategoriesPage: React.FC = () => {
       green: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800',
       pink: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 border-pink-200 dark:border-pink-800',
       orange: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800',
+      indigo: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800',
     };
     return colorMap[color as keyof typeof colorMap] || colorMap.blue;
   };
@@ -95,6 +107,7 @@ const CategoriesPage: React.FC = () => {
       green: 'bg-green-500',
       pink: 'bg-pink-500',
       orange: 'bg-orange-500',
+      indigo: 'bg-indigo-500',
     };
     return colorMap[color as keyof typeof colorMap] || colorMap.blue;
   };

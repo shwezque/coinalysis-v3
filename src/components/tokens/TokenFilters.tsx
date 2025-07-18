@@ -1,5 +1,5 @@
 import React from 'react';
-import { Filter, Star, Layers } from 'lucide-react';
+import { Filter, Star, Layers, Coins, Brain, Network, Laugh, Building, Globe } from 'lucide-react';
 
 interface TokenFiltersProps {
   selectedCategory: string | null;
@@ -9,11 +9,12 @@ interface TokenFiltersProps {
 }
 
 const CATEGORIES = [
-  { id: 'defi', name: 'DeFi', color: 'bg-blue-500' },
-  { id: 'ai', name: 'AI', color: 'bg-purple-500' },
-  { id: 'layer-1', name: 'Layer 1', color: 'bg-green-500' },
-  { id: 'meme', name: 'Meme', color: 'bg-pink-500' },
-  { id: 'rwa', name: 'RWA', color: 'bg-orange-500' },
+  { id: 'defi', name: 'DeFi', color: 'bg-blue-500', icon: Coins },
+  { id: 'ai', name: 'AI', color: 'bg-purple-500', icon: Brain },
+  { id: 'layer-1', name: 'Layer 1', color: 'bg-green-500', icon: Network },
+  { id: 'meme', name: 'Meme', color: 'bg-pink-500', icon: Laugh },
+  { id: 'rwa', name: 'RWA', color: 'bg-orange-500', icon: Building },
+  { id: 'depin', name: 'DePIN', color: 'bg-indigo-500', icon: Globe },
 ];
 
 const TokenFilters: React.FC<TokenFiltersProps> = ({
@@ -55,19 +56,23 @@ const TokenFilters: React.FC<TokenFiltersProps> = ({
           All
         </button>
 
-        {CATEGORIES.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => onCategoryChange(category.id)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              selectedCategory === category.id
-                ? `${category.color} text-white`
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-            }`}
-          >
-            {category.name}
-          </button>
-        ))}
+        {CATEGORIES.map((category) => {
+          const Icon = category.icon;
+          return (
+            <button
+              key={category.id}
+              onClick={() => onCategoryChange(category.id)}
+              className={`flex items-center px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                selectedCategory === category.id
+                  ? `${category.color} text-white`
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
+            >
+              <Icon className="w-4 h-4 mr-1.5" />
+              {category.name}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

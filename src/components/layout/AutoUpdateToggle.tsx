@@ -1,42 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { RefreshCw } from 'lucide-react';
-import { useAutoUpdate } from '../../hooks/useAutoUpdate';
+import { useQueryClient } from '@tanstack/react-query';
+import { coinGeckoService } from '../../services/coinGeckoService';
 
 const AutoUpdateToggle: React.FC = () => {
-  const { isAutoUpdateEnabled, updateInterval, toggleAutoUpdate } = useAutoUpdate();
-  const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    setLastUpdate(new Date());
-  }, []);
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      second: '2-digit'
-    });
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    
+    // Clear the cache
+    coinGeckoService.clearCache();
+    
+    // Invalidate all queries to force refetch
+    await queryClient.invalidateQueries();
+    
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1000);
   };
 
   return (
     <div className="flex items-center space-x-2">
       <button
-        onClick={toggleAutoUpdate}
+        onClick={handleRefresh}
+        disabled={isRefreshing}
         className={`p-2 rounded-lg transition-colors ${
-          isAutoUpdateEnabled
-            ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400'
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
-        } hover:bg-blue-200 dark:hover:bg-blue-800`}
-        aria-label="Toggle auto-update"
-        title={isAutoUpdateEnabled ? `Auto-updating every ${updateInterval}s` : 'Enable auto-update'}
+          isRefreshing
+            ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 cursor-not-allowed'
+            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-blue-200 dark:hover:bg-blue-800'
+        }`}
+        aria-label="Refresh data"
+        title="Refresh all data"
       >
-        <RefreshCw className={`w-5 h-5 ${isAutoUpdateEnabled ? 'animate-spin' : ''}`} />
+        <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
       </button>
-      {isAutoUpdateEnabled && (
-        <span className="text-xs text-gray-500 dark:text-gray-400">
-          Every {updateInterval}s
-        </span>
-      )}
+      <span className="text-xs text-gray-500 dark:text-gray-400">
+        {isRefreshing ? 'Refreshing...' : 'Refresh'}
+      </span>
     </div>
   );
 };

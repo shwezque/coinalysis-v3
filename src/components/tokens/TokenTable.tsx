@@ -66,16 +66,18 @@ const TokenTable: React.FC<TokenTableProps> = ({ onTokenSelect }) => {
     const symbol = token.symbol.toLowerCase();
     const name = token.name.toLowerCase();
     
-    if (['uni', 'aave', 'mkr', 'comp', 'sushi', 'crv', 'ldo'].includes(symbol)) {
+    if (['uni', 'aave', 'mkr', 'comp', 'sushi', 'crv', 'ldo', 'cake', 'bal', 'yfi'].includes(symbol)) {
       return 'defi';
-    } else if (['fet', 'agix', 'ocean', 'rndr', 'tau', 'grt'].includes(symbol)) {
+    } else if (['fet', 'agix', 'ocean', 'rndr', 'tau', 'grt', 'orai', 'ctxc', 'phb'].includes(symbol)) {
       return 'ai';
-    } else if (['btc', 'eth', 'ada', 'dot', 'sol', 'avax', 'near'].includes(symbol)) {
+    } else if (['btc', 'eth', 'ada', 'dot', 'sol', 'avax', 'near', 'atom', 'algo', 'ftm'].includes(symbol)) {
       return 'layer-1';
-    } else if (['doge', 'shib', 'pepe', 'floki', 'bonk'].includes(symbol)) {
+    } else if (['doge', 'shib', 'pepe', 'floki', 'bonk', 'wif', 'meme'].includes(symbol)) {
       return 'meme';
-    } else if (['ondo', 'mpl', 'rio', 'astr'].includes(symbol)) {
+    } else if (['ondo', 'mpl', 'rio', 'astr', 'cpool', 'tru'].includes(symbol)) {
       return 'rwa';
+    } else if (['fil', 'ar', 'hnt', 'rndr', 'iotx', 'mobile', 'honey', 'dimo'].includes(symbol)) {
+      return 'depin';
     }
     return null;
   };

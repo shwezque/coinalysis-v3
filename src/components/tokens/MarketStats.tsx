@@ -4,6 +4,7 @@ import { useMarketStats } from '../../hooks/useTokenData';
 import { formatCurrency, formatPercentage, getPriceChangeColor } from '../../utils/formatters';
 import { TrendingUp, DollarSign, BarChart3, Activity, AlertTriangle } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
+import { MarketStats as MarketStatsType } from '../../types';
 
 const MarketStats: React.FC = () => {
   const { data: stats, isLoading, error } = useMarketStats();
@@ -63,13 +64,15 @@ const MarketStats: React.FC = () => {
     return 'Extreme Greed';
   };
 
+  const typedStats = stats as MarketStatsType | undefined;
+
   const dominanceData = {
     labels: ['BTC', 'ETH', 'Others'],
     datasets: [{
       data: [
-        stats?.market_cap_percentage.btc || 0,
-        stats?.market_cap_percentage.eth || 0,
-        100 - (stats?.market_cap_percentage.btc || 0) - (stats?.market_cap_percentage.eth || 0)
+        typedStats?.market_cap_percentage.btc || 0,
+        typedStats?.market_cap_percentage.eth || 0,
+        100 - (typedStats?.market_cap_percentage.btc || 0) - (typedStats?.market_cap_percentage.eth || 0)
       ],
       backgroundColor: ['#f7931a', '#627eea', '#6b7280'],
       borderWidth: 0,
@@ -113,10 +116,10 @@ const MarketStats: React.FC = () => {
 
   // Generate mock historical data
   const marketCapHistory = Array(7).fill(0).map((_, i) => 
-    stats.total_market_cap * (1 + (Math.random() - 0.5) * 0.05)
+    (typedStats?.total_market_cap || 0) * (1 + (Math.random() - 0.5) * 0.05)
   );
   const volumeHistory = Array(7).fill(0).map((_, i) => 
-    stats.total_volume * (1 + (Math.random() - 0.5) * 0.1)
+    (typedStats?.total_volume || 0) * (1 + (Math.random() - 0.5) * 0.1)
   );
 
   return (
@@ -132,11 +135,11 @@ const MarketStats: React.FC = () => {
           <div className="flex-1">
             <p className="text-xs text-gray-600 dark:text-gray-400">Market Cap</p>
             <p className="text-lg font-bold text-gray-900 dark:text-white">
-              {formatCurrency(stats.total_market_cap)}
+              {formatCurrency(typedStats?.total_market_cap || 0)}
             </p>
-            <p className={`text-xs ${getPriceChangeColor(stats.market_cap_change_percentage_24h_usd)}`}>
-              {stats.market_cap_change_percentage_24h_usd > 0 ? '+' : ''}
-              {formatPercentage(stats.market_cap_change_percentage_24h_usd)}
+            <p className={`text-xs ${getPriceChangeColor(typedStats?.market_cap_change_percentage_24h_usd || 0)}`}>
+              {(typedStats?.market_cap_change_percentage_24h_usd || 0) > 0 ? '+' : ''}
+              {formatPercentage(typedStats?.market_cap_change_percentage_24h_usd || 0)}
             </p>
           </div>
           <BarChart3 className="w-6 h-6 text-blue-500 flex-shrink-0" />
@@ -159,7 +162,7 @@ const MarketStats: React.FC = () => {
           <div className="flex-1">
             <p className="text-xs text-gray-600 dark:text-gray-400">24h Volume</p>
             <p className="text-lg font-bold text-gray-900 dark:text-white">
-              {formatCurrency(stats.total_volume)}
+              {formatCurrency(typedStats?.total_volume || 0)}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Global trading
@@ -185,10 +188,10 @@ const MarketStats: React.FC = () => {
           <div className="flex-1">
             <p className="text-xs text-gray-600 dark:text-gray-400">BTC Dominance</p>
             <p className="text-lg font-bold text-gray-900 dark:text-white">
-              {formatPercentage(stats.market_cap_percentage.btc)}
+              {formatPercentage(typedStats?.market_cap_percentage.btc || 0)}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              ETH: {formatPercentage(stats.market_cap_percentage.eth)}
+              ETH: {formatPercentage(typedStats?.market_cap_percentage.eth || 0)}
             </p>
           </div>
           <DollarSign className="w-6 h-6 text-yellow-500 flex-shrink-0" />

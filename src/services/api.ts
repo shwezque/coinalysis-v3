@@ -1,6 +1,13 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://api.coingecko.com/api/v3';
+const isProduction = process.env.NODE_ENV === 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+// In development, use CoinGecko API directly (may hit CORS issues)
+// In production on Vercel, use the proxy
+const API_BASE_URL = isDevelopment 
+  ? 'https://api.coingecko.com/api/v3'
+  : '/api/proxy';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

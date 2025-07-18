@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../../hooks/usePortfolio';
-import { useTokenData } from '../../hooks/useTokenData';
+import { useAllTokens } from '../../hooks/useTokenData';
 import PortfolioRow from './PortfolioRow';
 import AddTokenModal from './AddTokenModal';
-import { PortfolioToken } from '../../types';
+import { PortfolioToken, Token } from '../../types';
 import { Plus, Wallet, Download, FileText } from 'lucide-react';
 import { calculatePortfolioValue, calculatePortfolioCost } from '../../utils/calculations';
 import { formatCurrency } from '../../utils/formatters';
@@ -11,11 +11,11 @@ import { exportToCSV, exportToJSON } from '../../utils/exportUtils';
 
 const PortfolioTable: React.FC = () => {
   const { portfolioTokens, addToken, updateToken, removeToken } = usePortfolio();
-  const { data: marketTokens } = useTokenData(1, 100);
+  const { data: marketTokens } = useAllTokens();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingToken, setEditingToken] = useState<PortfolioToken | null>(null);
 
-  const totalValue = marketTokens ? calculatePortfolioValue(portfolioTokens, marketTokens) : 0;
+  const totalValue = marketTokens ? calculatePortfolioValue(portfolioTokens, marketTokens as Token[]) : 0;
   const totalCost = calculatePortfolioCost(portfolioTokens);
 
   const handleAddOrUpdate = (token: PortfolioToken) => {
@@ -80,7 +80,7 @@ const PortfolioTable: React.FC = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => {
-                const prices = marketTokens?.reduce((acc, token) => {
+                const prices = (marketTokens as Token[])?.reduce((acc, token) => {
                   acc[token.id] = token.current_price;
                   return acc;
                 }, {} as { [key: string]: number }) || {};
@@ -94,7 +94,7 @@ const PortfolioTable: React.FC = () => {
             </button>
             <button
               onClick={() => {
-                const prices = marketTokens?.reduce((acc, token) => {
+                const prices = (marketTokens as Token[])?.reduce((acc, token) => {
                   acc[token.id] = token.current_price;
                   return acc;
                 }, {} as { [key: string]: number }) || {};
@@ -151,7 +151,7 @@ const PortfolioTable: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {portfolioTokens.map((portfolioToken) => {
-                const marketToken = marketTokens?.find(t => t.id === portfolioToken.tokenId);
+                const marketToken = (marketTokens as Token[])?.find(t => t.id === portfolioToken.tokenId);
                 return (
                   <PortfolioRow
                     key={portfolioToken.id}

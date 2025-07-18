@@ -1,23 +1,24 @@
 import React from 'react';
 import { usePortfolio } from '../hooks/usePortfolio';
-import { useTokenData } from '../hooks/useTokenData';
+import { useAllTokens } from '../hooks/useTokenData';
 import PortfolioChart from '../components/portfolio/PortfolioChart';
 import PortfolioTable from '../components/portfolio/PortfolioTable';
 import { calculatePortfolioValue, calculatePortfolioCost, generatePortfolioHistory } from '../utils/calculations';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
 import { TrendingUp, DollarSign, Percent, PieChart } from 'lucide-react';
+import { Token } from '../types';
 
 const PortfolioPage: React.FC = () => {
   const { portfolioTokens } = usePortfolio();
-  const { data: marketTokens } = useTokenData(1, 100);
+  const { data: marketTokens } = useAllTokens();
 
-  const totalValue = marketTokens ? calculatePortfolioValue(portfolioTokens, marketTokens) : 0;
+  const totalValue = marketTokens ? calculatePortfolioValue(portfolioTokens, marketTokens as Token[]) : 0;
   const totalCost = calculatePortfolioCost(portfolioTokens);
   const profitLoss = totalValue - totalCost;
   const profitLossPercentage = totalCost > 0 ? (profitLoss / totalCost) * 100 : 0;
   
   const portfolioHistory = marketTokens && portfolioTokens.length > 0
-    ? generatePortfolioHistory(portfolioTokens, marketTokens, 7)
+    ? generatePortfolioHistory(portfolioTokens, marketTokens as Token[], 7)
     : [];
 
   const stats = [

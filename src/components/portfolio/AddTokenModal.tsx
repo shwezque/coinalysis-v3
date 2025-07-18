@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { Token, PortfolioToken } from '../../types';
-import { useTokenData, useSearchTokens } from '../../hooks/useTokenData';
+import { useAllTokens, useSearchTokens } from '../../hooks/useTokenData';
 import { formatPrice } from '../../utils/formatters';
 
 interface AddTokenModalProps {
@@ -18,14 +18,14 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAdd, e
   const [buyPrice, setBuyPrice] = useState('');
   const [showSearch, setShowSearch] = useState(true);
 
-  const { data: allTokens } = useTokenData(1, 100);
+  const { data: allTokens } = useAllTokens();
   const { data: searchResults } = useSearchTokens(searchQuery);
 
   const displayTokens = searchQuery ? searchResults : allTokens;
 
   useEffect(() => {
     if (editToken && allTokens) {
-      const token = allTokens.find(t => t.id === editToken.tokenId);
+      const token = (allTokens as Token[])?.find(t => t.id === editToken.tokenId);
       if (token) {
         setSelectedToken(token);
         setQuantity(editToken.quantity.toString());
@@ -78,7 +78,7 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAdd, e
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
-          {showSearch && !editToken && (
+          {showSearch && !editToken ? (
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Search Token
@@ -94,9 +94,9 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAdd, e
                 />
               </div>
 
-              {displayTokens && displayTokens.length > 0 && (
+              {displayTokens && (displayTokens as Token[])?.length > 0 && (
                 <div className="mt-2 max-h-48 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg">
-                  {displayTokens.slice(0, 10).map((token) => (
+                  {(displayTokens as Token[]).slice(0, 10).map((token) => (
                     <button
                       key={token.id}
                       type="button"
@@ -118,7 +118,7 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAdd, e
                 </div>
               )}
             </div>
-          )}
+          ) : null}
 
           {selectedToken && (
             <div className="mb-6">
@@ -149,7 +149,7 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAdd, e
             </div>
           )}
 
-          {selectedToken && (
+          {selectedToken ? (
             <>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -197,7 +197,7 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAdd, e
                 </button>
               </div>
             </>
-          )}
+          ) : null}
         </form>
       </div>
     </div>
