@@ -2,6 +2,7 @@ import { api } from './api';
 import { Token, MarketStats, Category } from '../types';
 import { cacheService } from './cacheService';
 import { marketHistoryService } from './marketHistoryService';
+import { fallbackDataService } from './fallbackDataService';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -58,17 +59,34 @@ export const coinGeckoService = {
       }
     }
     
-    const response = await apiGet('/coins/markets', {
-      vs_currency: 'usd',
-      order: 'market_cap_desc',
-      per_page: perPage,
-      page,
-      sparkline: true,
-      price_change_percentage: '24h,7d,30d',
-    });
-    
-    cacheService.set(cacheKey, response.data);
-    return response.data;
+    try {
+      const response = await apiGet('/coins/markets', {
+        vs_currency: 'usd',
+        order: 'market_cap_desc',
+        per_page: perPage,
+        page,
+        sparkline: true,
+        price_change_percentage: '24h,7d,30d',
+      });
+      
+      cacheService.set(cacheKey, response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch tokens, using fallback data:', error);
+      
+      // Check cache one more time
+      const cached = cacheService.get<Token[]>(cacheKey);
+      if (cached) {
+        console.log('Using stale cached data');
+        return cached;
+      }
+      
+      // Use fallback data
+      console.log('Using fallback mock data');
+      const fallbackData = fallbackDataService.getTokens();
+      cacheService.set(cacheKey, fallbackData, 60000); // Cache for 1 minute
+      return fallbackData;
+    }
   },
 
   async getMarketStats(forceRefresh: boolean = false): Promise<MarketStats> {
@@ -81,17 +99,34 @@ export const coinGeckoService = {
       }
     }
     
-    const response = await apiGet('/global', {});
-    
-    const stats = {
-      total_market_cap: response.data.data.total_market_cap.usd,
-      total_volume: response.data.data.total_volume.usd,
-      market_cap_percentage: response.data.data.market_cap_percentage,
-      market_cap_change_percentage_24h_usd: response.data.data.market_cap_change_percentage_24h_usd,
-    };
-    
-    cacheService.set(cacheKey, stats);
-    return stats;
+    try {
+      const response = await apiGet('/global', {});
+      
+      const stats = {
+        total_market_cap: response.data.data.total_market_cap.usd,
+        total_volume: response.data.data.total_volume.usd,
+        market_cap_percentage: response.data.data.market_cap_percentage,
+        market_cap_change_percentage_24h_usd: response.data.data.market_cap_change_percentage_24h_usd,
+      };
+      
+      cacheService.set(cacheKey, stats);
+      return stats;
+    } catch (error) {
+      console.error('Failed to fetch market stats, using fallback data:', error);
+      
+      // Check cache one more time
+      const cached = cacheService.get<MarketStats>(cacheKey);
+      if (cached) {
+        console.log('Using stale cached market stats');
+        return cached;
+      }
+      
+      // Use fallback data
+      console.log('Using fallback market stats');
+      const fallbackStats = fallbackDataService.getMarketStats();
+      cacheService.set(cacheKey, fallbackStats, 60000); // Cache for 1 minute
+      return fallbackStats;
+    }
   },
 
   async getCategories(forceRefresh: boolean = false): Promise<Category[]> {
