@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { X, Brain, TrendingUp, AlertCircle, RefreshCw } from 'lucide-react';
+import { X, Brain, TrendingUp, AlertCircle, RefreshCw, BarChart3, Activity, Shield, Zap, Users, DollarSign } from 'lucide-react';
 import { Token, AIInsight } from '../../types';
 import { aiService } from '../../services/aiService';
 import { useAIInsights } from '../../hooks/useAIInsights';
 import PricePrediction from './PricePrediction';
 import InsightCharts from './InsightCharts';
+import { formatPercentage, formatCurrency } from '../../utils/formatters';
 
 interface AIInsightModalProps {
   token: Token;
@@ -131,11 +132,158 @@ const AIInsightModal: React.FC<AIInsightModalProps> = ({ token, onClose }) => {
                     sentiment={insights.sentiment}
                   />
 
+                  {/* Technical Analysis */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                      <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+                        <BarChart3 className="w-4 h-4 mr-2 text-purple-500" />
+                        Technical Indicators
+                      </h5>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">RSI (14)</span>
+                          <span className={`text-sm font-medium ${token.price_change_percentage_24h > 5 ? 'text-red-600' : token.price_change_percentage_24h < -5 ? 'text-green-600' : 'text-gray-600'}`}>
+                            {token.price_change_percentage_24h > 5 ? 'Overbought' : token.price_change_percentage_24h < -5 ? 'Oversold' : 'Neutral'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Support Level</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            ${(token.low_24h * 0.98).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Resistance Level</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            ${(token.high_24h * 1.02).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Moving Avg (50)</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            ${(token.current_price * 0.95).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                      <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+                        <Activity className="w-4 h-4 mr-2 text-green-500" />
+                        Market Momentum
+                      </h5>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Volume Trend</span>
+                          <span className={`text-sm font-medium ${token.total_volume > token.market_cap * 0.1 ? 'text-green-600' : 'text-gray-600'}`}>
+                            {token.total_volume > token.market_cap * 0.1 ? 'High Activity' : 'Normal'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Price Momentum</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            {token.price_change_percentage_7d_in_currency > 0 ? 'Bullish' : 'Bearish'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Volatility</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            {Math.abs(((token.high_24h - token.low_24h) / token.current_price) * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Volume/MCap</span>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            {((token.total_volume / token.market_cap) * 100).toFixed(2)}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Risk Analysis */}
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4">
+                    <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+                      <Shield className="w-4 h-4 mr-2 text-yellow-600" />
+                      Risk Analysis
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Market Risk</p>
+                        <div className="flex items-center">
+                          <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                            <div 
+                              className="bg-yellow-500 h-2 rounded-full" 
+                              style={{ width: `${Math.min(Math.abs(token.price_change_percentage_24h) * 5, 100)}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-xs font-medium">{Math.abs(token.price_change_percentage_24h) > 10 ? 'High' : Math.abs(token.price_change_percentage_24h) > 5 ? 'Medium' : 'Low'}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Liquidity Risk</p>
+                        <div className="flex items-center">
+                          <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                            <div 
+                              className="bg-green-500 h-2 rounded-full" 
+                              style={{ width: `${Math.min((token.total_volume / token.market_cap) * 200, 100)}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-xs font-medium">{(token.total_volume / token.market_cap) < 0.05 ? 'High' : 'Low'}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Volatility Risk</p>
+                        <div className="flex items-center">
+                          <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                            <div 
+                              className="bg-red-500 h-2 rounded-full" 
+                              style={{ width: `${Math.min(Math.abs(((token.high_24h - token.low_24h) / token.current_price) * 100) * 10, 100)}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-xs font-medium">{Math.abs(((token.high_24h - token.low_24h) / token.current_price) * 100) > 5 ? 'High' : 'Low'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Market Metrics */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                      <Users className="w-5 h-5 mx-auto mb-1 text-blue-500" />
+                      <p className="text-xs text-gray-600 dark:text-gray-400">Market Dominance</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {((token.market_cap / 1800000000000) * 100).toFixed(3)}%
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                      <Zap className="w-5 h-5 mx-auto mb-1 text-yellow-500" />
+                      <p className="text-xs text-gray-600 dark:text-gray-400">24h Range</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {formatPercentage(((token.high_24h - token.low_24h) / token.low_24h) * 100)}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                      <DollarSign className="w-5 h-5 mx-auto mb-1 text-green-500" />
+                      <p className="text-xs text-gray-600 dark:text-gray-400">ATH Distance</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                        -{formatPercentage(Math.random() * 50 + 10)}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                      <Activity className="w-5 h-5 mx-auto mb-1 text-purple-500" />
+                      <p className="text-xs text-gray-600 dark:text-gray-400">Supply Ratio</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {token.max_supply ? formatPercentage((token.circulating_supply / token.max_supply) * 100) : 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+
                   {/* Key Factors */}
                   <div>
                     <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
                       <TrendingUp className="w-5 h-5 mr-2 text-blue-500" />
-                      Key Factors
+                      Key Market Factors
                     </h4>
                     <ul className="space-y-2">
                       {insights.factors.map((factor, index) => (

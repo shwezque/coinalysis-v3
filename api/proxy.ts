@@ -24,11 +24,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    // Ensure endpoint starts with /
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    
     // Use native fetch instead of axios to avoid dependency issues
     const queryString = new URLSearchParams(params as any).toString();
-    const url = `${COINGECKO_API_BASE}${endpoint}${queryString ? `?${queryString}` : ''}`;
+    const url = `${COINGECKO_API_BASE}${cleanEndpoint}${queryString ? `?${queryString}` : ''}`;
     
-    console.log('Fetching from:', url);
+    console.log('Proxy request:', {
+      endpoint: cleanEndpoint,
+      params,
+      fullUrl: url
+    });
     
     const response = await fetch(url, {
       headers: {
@@ -52,14 +59,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const data = await response.json();
+    
+    // Set cache headers
+    res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
     res.status(200).json(data);
   } catch (error: any) {
-    console.error('Proxy error:', error.message);
+    console.error('Proxy error:', error.message, error.stack);
+    
+    // Don't expose internal errors in production
+    const isProduction = process.env.NODE_ENV === 'production';
     
     res.status(500).json({
       error: 'Failed to fetch data from CoinGecko',
-      message: error.message,
+      message: isProduction ? 'API service temporarily unavailable' : error.message,
       endpoint: endpoint,
+      details: isProduction ? undefined : {
+        stack: error.stack,
+        url: `${COINGECKO_API_BASE}${cleanEndpoint || endpoint}`
+      }
     });
   }
 }

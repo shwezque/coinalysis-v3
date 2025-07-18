@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAllTokens } from '../../hooks/useTokenData';
 import TokenRow from '../tokens/TokenRow';
@@ -6,83 +6,53 @@ import { useStarredTokens } from '../../hooks/useStarredTokens';
 import { ArrowLeft, Layers, Brain, Globe, Image, Coins, Building, Laugh, Network } from 'lucide-react';
 import { formatCurrency, formatPercentage } from '../../utils/formatters';
 import { Token } from '../../types';
+import { getCategoryById, getTokensForCategory } from '../../services/categoryService';
+import AIInsightModal from '../insights/AIInsightModal';
 
 const CategoryDetail: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
   const { data: allTokens } = useAllTokens();
   const { toggleStar, isStarred } = useStarredTokens();
+  const [selectedToken, setSelectedToken] = useState<Token | null>(null);
 
-  // Predefined categories matching the ones in CategoriesPage
-  const categories = {
-    defi: {
-      name: 'DeFi',
-      description: 'Decentralized Finance protocols and platforms',
-      marketCap: 45234567890,
-      marketCapChange24h: 3.45,
-      volume24h: 8934567890,
-      tokens: ['uni', 'aave', 'mkr', 'comp', 'sushi', 'crv', 'ldo'],
-      icon: <Coins className="w-6 h-6" />,
-      color: 'blue',
-    },
-    ai: {
-      name: 'AI',
-      description: 'Artificial Intelligence and Machine Learning tokens',
-      marketCap: 23456789012,
-      marketCapChange24h: 8.92,
-      volume24h: 4567890123,
-      tokens: ['fet', 'agix', 'ocean', 'rndr', 'tau', 'grt'],
-      icon: <Brain className="w-6 h-6" />,
-      color: 'purple',
-    },
-    'layer-1': {
-      name: 'Layer 1',
-      description: 'Base layer blockchain protocols',
-      marketCap: 1234567890123,
-      marketCapChange24h: -1.23,
-      volume24h: 234567890123,
-      tokens: ['btc', 'eth', 'ada', 'dot', 'sol', 'avax', 'near'],
-      icon: <Layers className="w-6 h-6" />,
-      color: 'green',
-    },
-    meme: {
-      name: 'Meme',
-      description: 'Community-driven meme cryptocurrencies',
-      marketCap: 34567890123,
-      marketCapChange24h: 15.67,
-      volume24h: 6789012345,
-      tokens: ['doge', 'shib', 'pepe', 'floki', 'bonk'],
-      icon: <Image className="w-6 h-6" />,
-      color: 'pink',
-    },
-    rwa: {
-      name: 'RWA',
-      description: 'Real World Assets tokenization',
-      marketCap: 12345678901,
-      marketCapChange24h: 4.56,
-      volume24h: 2345678901,
-      tokens: ['ondo', 'mpl', 'rio', 'astr', 'cpool', 'tru'],
-      icon: <Building className="w-6 h-6" />,
-      color: 'orange',
-    },
-    depin: {
-      name: 'DePIN',
-      description: 'Decentralized Physical Infrastructure Networks',
-      marketCap: 25000000000,
-      marketCapChange24h: 5.2,
-      volume24h: 1500000000,
-      tokens: ['fil', 'ar', 'hnt', 'rndr', 'iotx', 'mobile', 'honey', 'dimo'],
-      icon: <Globe className="w-6 h-6" />,
-      color: 'indigo',
-    },
+  const categoryDef = categoryId ? getCategoryById(categoryId) : undefined;
+  const categoryTokenIds = categoryId ? getTokensForCategory(categoryId) : [];
+  
+  const getIcon = (iconName: string) => {
+    const iconMap: { [key: string]: React.ReactNode } = {
+      'Coins': <Coins className="w-6 h-6" />,
+      'Brain': <Brain className="w-6 h-6" />,
+      'Layers': <Layers className="w-6 h-6" />,
+      'Image': <Image className="w-6 h-6" />,
+      'Building': <Building className="w-6 h-6" />,
+      'Globe': <Globe className="w-6 h-6" />,
+    };
+    return iconMap[iconName] || <Coins className="w-6 h-6" />;
   };
 
-  const category = categoryId ? categories[categoryId as keyof typeof categories] : null;
+  // Create category object compatible with existing code
+  const category = categoryDef ? {
+    name: categoryDef.name,
+    description: categoryDef.description,
+    marketCap: Math.random() * 1000000000000 + 10000000000, // Mock data
+    marketCapChange24h: (Math.random() - 0.5) * 20, // Mock data
+    volume24h: Math.random() * 50000000000 + 1000000000, // Mock data
+    icon: getIcon(categoryDef.icon),
+    color: categoryDef.color,
+  } : null;
 
-  // Filter tokens based on category
-  const categoryTokens = (allTokens as Token[] | undefined)?.filter(token => 
-    category?.tokens.includes(token.symbol.toLowerCase())
-  ) || [];
+  // Filter tokens based on category using centralized service
+  const categoryTokens = (allTokens as Token[] | undefined)?.filter(token => {
+    return categoryTokenIds.some(catToken => 
+      catToken.symbol.toLowerCase() === token.symbol.toLowerCase() ||
+      catToken.id.toLowerCase() === token.id.toLowerCase()
+    );
+  }) || [];
+
+  const handleAIClick = (token: Token) => {
+    setSelectedToken(token);
+  };
 
   const getIconBgColor = (color: string) => {
     const colorMap = {
@@ -226,7 +196,7 @@ const CategoryDetail: React.FC = () => {
                     index={index}
                     isStarred={isStarred(token.id)}
                     onStar={toggleStar}
-                    onAIClick={() => {}}
+                    onAIClick={handleAIClick}
                   />
                 ))
               )}
@@ -234,6 +204,13 @@ const CategoryDetail: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {selectedToken && (
+        <AIInsightModal
+          token={selectedToken}
+          onClose={() => setSelectedToken(null)}
+        />
+      )}
     </div>
   );
 };

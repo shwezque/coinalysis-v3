@@ -3,7 +3,6 @@ import { Token } from '../../types';
 import { formatPrice, formatCurrency, formatPercentage, getPriceChangeColor, getPriceChangeIcon } from '../../utils/formatters';
 import MiniChart from './MiniChart';
 import StarButton from '../common/StarButton';
-import { Brain } from 'lucide-react';
 
 interface TokenRowProps {
   token: Token;
@@ -84,10 +83,10 @@ const TokenRow: React.FC<TokenRowProps> = ({ token, index, isStarred = false, on
       <td className="px-2 sm:px-4 py-4 text-center">
         <button
           onClick={() => onAIClick && onAIClick(token)}
-          className="p-1.5 sm:p-2 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+          className="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors font-semibold text-xs sm:text-sm"
           aria-label="AI Insights"
         >
-          <Brain className="w-4 h-4 sm:w-5 sm:h-5" />
+          AI
         </button>
       </td>
     </tr>

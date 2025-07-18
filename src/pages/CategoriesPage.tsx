@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layers, TrendingUp, Brain, Globe, Image, Coins, Building } from 'lucide-react';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
+import { categoryDefinitions } from '../services/categoryService';
 
 interface Category {
   id: string;
@@ -18,75 +19,30 @@ interface Category {
 const CategoriesPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // Predefined categories with mock data
-  const categories: Category[] = [
-    {
-      id: 'defi',
-      name: 'DeFi',
-      description: 'Decentralized Finance protocols and platforms',
-      marketCap: 45234567890,
-      marketCapChange24h: 3.45,
-      volume24h: 8934567890,
-      topCoins: ['UNI', 'AAVE', 'MKR', 'COMP', 'CRV'],
-      icon: <Coins className="w-6 h-6" />,
-      color: 'blue',
-    },
-    {
-      id: 'ai',
-      name: 'AI',
-      description: 'Artificial Intelligence and Machine Learning tokens',
-      marketCap: 23456789012,
-      marketCapChange24h: 8.92,
-      volume24h: 4567890123,
-      topCoins: ['FET', 'AGIX', 'OCEAN', 'RNDR', 'TAO'],
-      icon: <Brain className="w-6 h-6" />,
-      color: 'purple',
-    },
-    {
-      id: 'layer-1',
-      name: 'Layer 1',
-      description: 'Base layer blockchain protocols',
-      marketCap: 1234567890123,
-      marketCapChange24h: -1.23,
-      volume24h: 234567890123,
-      topCoins: ['BTC', 'ETH', 'SOL', 'ADA', 'AVAX'],
-      icon: <Layers className="w-6 h-6" />,
-      color: 'green',
-    },
-    {
-      id: 'meme',
-      name: 'Meme',
-      description: 'Community-driven meme cryptocurrencies',
-      marketCap: 34567890123,
-      marketCapChange24h: 15.67,
-      volume24h: 6789012345,
-      topCoins: ['DOGE', 'SHIB', 'PEPE', 'FLOKI', 'BONK'],
-      icon: <Image className="w-6 h-6" />,
-      color: 'pink',
-    },
-    {
-      id: 'rwa',
-      name: 'RWA',
-      description: 'Real World Assets tokenization',
-      marketCap: 12345678901,
-      marketCapChange24h: 4.56,
-      volume24h: 2345678901,
-      topCoins: ['ONDO', 'MPL', 'RIO', 'ASTR', 'DUSK'],
-      icon: <Building className="w-6 h-6" />,
-      color: 'orange',
-    },
-    {
-      id: 'depin',
-      name: 'DePIN',
-      description: 'Decentralized Physical Infrastructure Networks',
-      marketCap: 25000000000,
-      marketCapChange24h: 5.2,
-      volume24h: 1500000000,
-      topCoins: ['FIL', 'AR', 'HNT', 'RNDR', 'IOTX'],
-      icon: <Globe className="w-6 h-6" />,
-      color: 'indigo',
-    },
-  ];
+  const getIcon = (iconName: string) => {
+    const iconMap: { [key: string]: React.ReactNode } = {
+      'Coins': <Coins className="w-6 h-6" />,
+      'Brain': <Brain className="w-6 h-6" />,
+      'Layers': <Layers className="w-6 h-6" />,
+      'Image': <Image className="w-6 h-6" />,
+      'Building': <Building className="w-6 h-6" />,
+      'Globe': <Globe className="w-6 h-6" />,
+    };
+    return iconMap[iconName] || <Coins className="w-6 h-6" />;
+  };
+
+  // Generate categories from centralized definitions with mock market data
+  const categories: Category[] = categoryDefinitions.map(def => ({
+    id: def.id,
+    name: def.name,
+    description: def.description,
+    marketCap: Math.random() * 1000000000000 + 10000000000, // Mock data
+    marketCapChange24h: (Math.random() - 0.5) * 20, // Mock data -10% to +10%
+    volume24h: Math.random() * 50000000000 + 1000000000, // Mock data
+    topCoins: def.tokens.slice(0, 5).map(t => t.symbol),
+    icon: getIcon(def.icon),
+    color: def.color,
+  }));
 
   const getColorClasses = (color: string) => {
     const colorMap = {
@@ -172,7 +128,7 @@ const CategoriesPage: React.FC = () => {
               </div>
 
               <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Top Coins</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Top Tokens</p>
                 <div className="flex flex-wrap gap-1">
                   {category.topCoins.map((coin) => (
                     <span

@@ -7,6 +7,7 @@ import Pagination from '../common/Pagination';
 import AIInsightModal from '../insights/AIInsightModal';
 import { Token } from '../../types';
 import { ChevronDown } from 'lucide-react';
+import { getTokenCategory } from '../../services/categoryService';
 
 interface TokenTableProps {
   onTokenSelect?: (token: Token) => void;
@@ -61,31 +62,19 @@ const TokenTable: React.FC<TokenTableProps> = ({ onTokenSelect }) => {
     return true;
   });
 
-  // Mock function to assign categories to tokens
-  const getTokenCategory = (token: Token): string | null => {
-    const symbol = token.symbol.toLowerCase();
-    const name = token.name.toLowerCase();
-    
-    if (['uni', 'aave', 'mkr', 'comp', 'sushi', 'crv', 'ldo', 'cake', 'bal', 'yfi'].includes(symbol)) {
-      return 'defi';
-    } else if (['fet', 'agix', 'ocean', 'rndr', 'tau', 'grt', 'orai', 'ctxc', 'phb'].includes(symbol)) {
-      return 'ai';
-    } else if (['btc', 'eth', 'ada', 'dot', 'sol', 'avax', 'near', 'atom', 'algo', 'ftm'].includes(symbol)) {
-      return 'layer-1';
-    } else if (['doge', 'shib', 'pepe', 'floki', 'bonk', 'wif', 'meme'].includes(symbol)) {
-      return 'meme';
-    } else if (['ondo', 'mpl', 'rio', 'astr', 'cpool', 'tru'].includes(symbol)) {
-      return 'rwa';
-    } else if (['fil', 'ar', 'hnt', 'rndr', 'iotx', 'mobile', 'honey', 'dimo'].includes(symbol)) {
-      return 'depin';
-    }
-    return null;
-  };
-
   if (error) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 text-center">
-        <p className="text-red-600 dark:text-red-400">Failed to load tokens. Please try again later.</p>
+        <p className="text-red-600 dark:text-red-400 mb-4">Failed to load real-time prices</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          Unable to connect to CoinGecko API. This may be due to rate limiting or network issues.
+        </p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Retry
+        </button>
       </div>
     );
   }

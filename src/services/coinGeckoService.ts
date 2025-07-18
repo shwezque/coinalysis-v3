@@ -1,7 +1,7 @@
 import { api } from './api';
 import { Token, MarketStats, Category } from '../types';
 import { cacheService } from './cacheService';
-import { mockTokens, mockMarketStats, mockCategories } from './mockData';
+import { marketHistoryService } from './marketHistoryService';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -15,14 +15,19 @@ const apiGet = async (endpoint: string, params: any) => {
     }
   } catch (error: any) {
     console.error('API Error:', error.message);
-    // Return mock data on error
-    if (endpoint.includes('/coins/markets')) {
-      return { data: mockTokens };
-    } else if (endpoint.includes('/global')) {
-      return { data: { data: mockMarketStats } };
-    } else if (endpoint.includes('/coins/categories')) {
-      return { data: mockCategories };
+    
+    // Check if we're in production and should retry
+    if (!isDevelopment && error.response?.status !== 429) {
+      // Log the error for debugging
+      console.error('CoinGecko API Error in production:', {
+        endpoint,
+        params,
+        error: error.message,
+        status: error.response?.status
+      });
     }
+    
+    // Throw error to trigger React Query retry logic
     throw error;
   }
 };
@@ -124,5 +129,6 @@ export const coinGeckoService = {
   
   clearCache(): void {
     cacheService.clear();
+    marketHistoryService.clearCache();
   },
 };

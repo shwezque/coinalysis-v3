@@ -4,16 +4,17 @@ import { useAllTokens } from '../../hooks/useTokenData';
 import PortfolioRow from './PortfolioRow';
 import AddTokenModal from './AddTokenModal';
 import { PortfolioToken, Token } from '../../types';
-import { Plus, Wallet, Download, FileText } from 'lucide-react';
+import { Plus, Wallet, Download, FileText, Trash2 } from 'lucide-react';
 import { calculatePortfolioValue, calculatePortfolioCost } from '../../utils/calculations';
 import { formatCurrency } from '../../utils/formatters';
 import { exportToCSV, exportToJSON } from '../../utils/exportUtils';
 
 const PortfolioTable: React.FC = () => {
-  const { portfolioTokens, addToken, updateToken, removeToken } = usePortfolio();
+  const { portfolioTokens, addToken, updateToken, removeToken, clearPortfolio } = usePortfolio();
   const { data: marketTokens } = useAllTokens();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingToken, setEditingToken] = useState<PortfolioToken | null>(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const totalValue = marketTokens ? calculatePortfolioValue(portfolioTokens, marketTokens as Token[]) : 0;
   const totalCost = calculatePortfolioCost(portfolioTokens);
@@ -34,6 +35,11 @@ const PortfolioTable: React.FC = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingToken(null);
+  };
+
+  const handleClearAll = () => {
+    clearPortfolio();
+    setShowClearConfirm(false);
   };
 
   if (portfolioTokens.length === 0) {
@@ -78,6 +84,14 @@ const PortfolioTable: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setShowClearConfirm(true)}
+              className="flex items-center px-3 py-2 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800 transition-colors text-sm"
+              title="Clear all portfolio records"
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Clear All
+            </button>
             <button
               onClick={() => {
                 const prices = (marketTokens as Token[])?.reduce((acc, token) => {
@@ -173,6 +187,52 @@ const PortfolioTable: React.FC = () => {
         onAdd={handleAddOrUpdate}
         editToken={editingToken}
       />
+
+      {/* Clear All Confirmation Dialog */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div 
+              className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75"
+              onClick={() => setShowClearConfirm(false)}
+            ></div>
+
+            <div className="inline-block w-full max-w-md px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white dark:bg-gray-800 rounded-lg shadow-xl sm:my-8 sm:align-middle sm:p-6">
+              <div className="sm:flex sm:items-start">
+                <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-red-100 dark:bg-red-900 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                  <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
+                </div>
+                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">
+                    Clear Portfolio
+                  </h3>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Are you sure you want to clear all portfolio records? This action cannot be undone.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Clear All
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowClearConfirm(false)}
+                  className="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

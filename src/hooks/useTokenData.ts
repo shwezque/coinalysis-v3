@@ -11,6 +11,8 @@ export const useTokenData = (page: number = 1, perPage: number = 100) => {
     refetchInterval: false, // Disable auto-refresh
     refetchOnWindowFocus: false, // Disable refetch on window focus
     refetchOnMount: false, // Don't refetch on mount if data exists
+    retry: 3, // Retry 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 };
 
