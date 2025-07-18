@@ -1,5 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import axios from 'axios';
 
 const COINGECKO_API_BASE = 'https://api.coingecko.com/api/v3';
 
@@ -25,26 +24,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const response = await axios.get(`${COINGECKO_API_BASE}${endpoint}`, {
-      params,
+    // Use native fetch instead of axios to avoid dependency issues
+    const queryString = new URLSearchParams(params as any).toString();
+    const url = `${COINGECKO_API_BASE}${endpoint}${queryString ? `?${queryString}` : ''}`;
+    
+    console.log('Fetching from:', url);
+    
+    const response = await fetch(url, {
       headers: {
         'Accept': 'application/json',
+        'User-Agent': 'Coinalysis/1.0',
       },
     });
 
-    res.status(200).json(response.data);
+    if (!response.ok) {
+      // Check for rate limit
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After');
+        res.status(429).json({
+          error: 'Rate limit exceeded',
+          retryAfter: retryAfter || '60',
+          message: 'CoinGecko API rate limit reached. Please try again later.',
+        });
+        return;
+      }
+      throw new Error(`CoinGecko API responded with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    res.status(200).json(data);
   } catch (error: any) {
     console.error('Proxy error:', error.message);
     
-    if (error.response) {
-      res.status(error.response.status).json({
-        error: error.response.data || 'An error occurred',
-        status: error.response.status,
-      });
-    } else {
-      res.status(500).json({
-        error: 'Failed to fetch data from CoinGecko',
-      });
-    }
+    res.status(500).json({
+      error: 'Failed to fetch data from CoinGecko',
+      message: error.message,
+      endpoint: endpoint,
+    });
   }
 }

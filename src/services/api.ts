@@ -21,6 +21,11 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 429) {
       console.error('Rate limit exceeded. Please try again later.');
+      // Show user-friendly message
+      const retryAfter = error.response.data?.retryAfter || '60';
+      console.error(`Please wait ${retryAfter} seconds before retrying.`);
+    } else if (error.response?.status === 500) {
+      console.error('Server error. Using cached data or fallback.');
     }
     return Promise.reject(error);
   }
