@@ -89,8 +89,7 @@ const Footer: React.FC = () => {
 
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-            © {new Date().getFullYear()} Coinalysis. All rights reserved. 
-            Market data provided by <a href="https://www.coingecko.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">CoinGecko</a>.
+            © {new Date().getFullYear()} Coinalysis. All rights reserved.
           </p>
         </div>
       </div>
