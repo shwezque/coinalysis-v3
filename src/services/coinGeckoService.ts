@@ -9,23 +9,38 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 const apiGet = async (endpoint: string, params: any) => {
   try {
     if (isDevelopment) {
+      // In development, call CoinGecko directly
       return await api.get(endpoint, { params });
     } else {
-      return await api.get('', { params: { endpoint, ...params } });
+      // In production, use the proxy - the proxy expects endpoint as a query param
+      const proxyParams = {
+        endpoint: endpoint.startsWith('/') ? endpoint : `/${endpoint}`,
+        ...params
+      };
+      
+      console.log('Making production API call:', {
+        baseURL: api.defaults.baseURL,
+        proxyParams
+      });
+      
+      // Call the proxy endpoint directly
+      const response = await api.get('', { params: proxyParams });
+      
+      // Check if we got valid data
+      if (!response.data) {
+        throw new Error('No data received from API');
+      }
+      
+      return response;
     }
   } catch (error: any) {
-    console.error('API Error:', error.message);
-    
-    // Check if we're in production and should retry
-    if (!isDevelopment && error.response?.status !== 429) {
-      // Log the error for debugging
-      console.error('CoinGecko API Error in production:', {
-        endpoint,
-        params,
-        error: error.message,
-        status: error.response?.status
-      });
-    }
+    console.error('API Error:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      endpoint,
+      isDevelopment
+    });
     
     // Throw error to trigger React Query retry logic
     throw error;
