@@ -9,6 +9,13 @@ const API_BASE_URL = isDevelopment
   ? 'https://api.coingecko.com/api/v3'
   : '/api/proxy';
 
+console.log('API Configuration:', {
+  isDevelopment,
+  isProduction,
+  NODE_ENV: process.env.NODE_ENV,
+  API_BASE_URL
+});
+
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {

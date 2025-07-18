@@ -63,18 +63,44 @@ const TokenTable: React.FC<TokenTableProps> = ({ onTokenSelect }) => {
   });
 
   if (error) {
+    console.error('TokenTable Error:', error);
+    
+    // Try to use cached data if available
+    const cachedTokens = tokens;
+    if (cachedTokens && cachedTokens.length > 0) {
+      console.log('Using cached token data');
+    }
+    
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 text-center">
         <p className="text-red-600 dark:text-red-400 mb-4">Failed to load real-time prices</p>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
           Unable to connect to CoinGecko API. This may be due to rate limiting or network issues.
         </p>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Retry
-        </button>
+        <div className="space-y-2 mb-4">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Error details: {error.message || 'Unknown error'}
+          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            You can try using a VPN or wait a few minutes before retrying.
+          </p>
+        </div>
+        <div className="flex justify-center gap-2">
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Retry
+          </button>
+          <a
+            href="/api/test"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            Test API
+          </a>
+        </div>
       </div>
     );
   }

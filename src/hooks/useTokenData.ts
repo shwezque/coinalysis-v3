@@ -5,7 +5,16 @@ import { Token, MarketStats, Category } from '../types';
 export const useTokenData = (page: number = 1, perPage: number = 100) => {
   return useQuery({
     queryKey: ['tokens', page, perPage],
-    queryFn: () => coinGeckoService.getTokens(page, perPage),
+    queryFn: async () => {
+      try {
+        const data = await coinGeckoService.getTokens(page, perPage);
+        console.log('Token data fetched successfully:', data?.length || 0, 'tokens');
+        return data;
+      } catch (error) {
+        console.error('Failed to fetch tokens:', error);
+        throw error;
+      }
+    },
     staleTime: Infinity, // Never consider data stale
     gcTime: Infinity, // Keep in cache forever
     refetchInterval: false, // Disable auto-refresh

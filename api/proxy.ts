@@ -57,8 +57,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       'User-Agent': 'Coinalysis/1.0',
     };
     
-    if (process.env.COINGECKO_API_KEY) {
-      headers['x-cg-demo-api-key'] = process.env.COINGECKO_API_KEY;
+    // Check for API key
+    const apiKey = process.env.COINGECKO_API_KEY;
+    if (apiKey) {
+      headers['x-cg-demo-api-key'] = apiKey;
+      console.log('Using CoinGecko API key');
+    } else {
+      console.log('No CoinGecko API key found');
     }
     
     const response = await fetch(url, {
