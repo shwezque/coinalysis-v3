@@ -257,11 +257,11 @@ const MetricInsightModal: React.FC<MetricInsightModalProps> = ({ metric, current
                       <Target className="w-5 h-5 mr-2 text-green-500" />
                       Key Market Insights
                     </h4>
-                    <ul className="space-y-2">
+                    <ul className="space-y-2 text-left">
                       {insights.keyPoints.map((point, index) => (
-                        <li key={index} className="flex items-start">
+                        <li key={index} className="flex items-start text-left">
                           <span className="inline-block w-2 h-2 mt-1.5 mr-2 bg-blue-500 rounded-full flex-shrink-0"></span>
-                          <span className="text-sm text-gray-600 dark:text-gray-300">{point}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-300 text-left">{point}</span>
                         </li>
                       ))}
                     </ul>
