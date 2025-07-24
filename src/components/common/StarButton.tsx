@@ -18,11 +18,11 @@ const StarButton: React.FC<StarButtonProps> = ({ tokenId, isStarred = false, onT
   return (
     <button
       onClick={handleClick}
-      className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+      className="p-0.5 sm:p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
       aria-label={isStarred ? 'Remove from favorites' : 'Add to favorites'}
     >
       <Star
-        className={`w-4 h-4 ${
+        className={`w-3 h-3 sm:w-4 sm:h-4 ${
           isStarred
             ? 'fill-yellow-400 text-yellow-400'
             : 'text-gray-400 dark:text-gray-600'

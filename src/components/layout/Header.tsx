@@ -49,7 +49,7 @@ const Header: React.FC = () => {
           </div>
 
           {/* Mobile Search Bar */}
-          <div className="md:hidden pb-2">
+          <div className="md:hidden pb-3">
             <SearchBar />
           </div>
         </div>
