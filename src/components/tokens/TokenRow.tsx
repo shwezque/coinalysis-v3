@@ -69,7 +69,12 @@ const TokenRow: React.FC<TokenRowProps> = ({ token, index, isStarred = false, on
         </button>
       </td>
       <td className="px-1 sm:px-4 py-2 sm:py-4 text-right text-gray-900 dark:text-white">
-        <p className="text-xs sm:text-base">${(token.market_cap / 1000000000).toFixed(1)}B</p>
+        <p className="text-xs sm:text-base">
+          {token.market_cap >= 1000000000000 
+            ? `$${(token.market_cap / 1000000000000).toFixed(1)}T`
+            : `$${(token.market_cap / 1000000000).toFixed(1)}B`
+          }
+        </p>
       </td>
       <td className="hidden lg:table-cell px-4 py-4 text-right text-gray-900 dark:text-white">
         {formatCurrency(token.total_volume)}

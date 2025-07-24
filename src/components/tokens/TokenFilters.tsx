@@ -24,11 +24,11 @@ const TokenFilters: React.FC<TokenFiltersProps> = ({
   onFavoritesToggle,
 }) => {
   return (
-    <div className="flex flex-wrap items-center gap-1">
+    <div className="flex items-center gap-2">
       {/* Favorites Filter */}
       <button
         onClick={onFavoritesToggle}
-        className={`flex items-center px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors ${
+        className={`flex items-center px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${
           showFavoritesOnly
             ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
             : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -38,8 +38,11 @@ const TokenFilters: React.FC<TokenFiltersProps> = ({
         Favorites
       </button>
 
+      {/* Vertical Divider */}
+      <div className="h-6 w-px bg-gray-300 dark:bg-gray-600" />
+
       {/* Category Filters */}
-      <div className="flex items-center gap-1 md:gap-2 flex-wrap">
+      <div className="flex items-center gap-1 flex-wrap">
         <span className="hidden md:flex text-sm text-gray-500 dark:text-gray-400 items-center">
           <Layers className="w-4 h-4 mr-1" />
           Categories:

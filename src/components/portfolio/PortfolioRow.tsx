@@ -31,66 +31,66 @@ const PortfolioRow: React.FC<PortfolioRowProps> = ({ portfolioToken, marketToken
 
   return (
     <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-      <td className="px-4 py-4">
-        <div className="flex items-center space-x-3">
+      <td className="px-2 sm:px-4 py-2 sm:py-4">
+        <div className="flex items-center space-x-2">
           <img
             src={marketToken.image}
             alt={marketToken.name}
-            className="w-8 h-8 rounded-full"
+            className="w-6 h-6 sm:w-8 sm:h-8 rounded-full"
           />
-          <div>
-            <p className="font-medium text-gray-900 dark:text-white">{marketToken.name}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 uppercase">{marketToken.symbol}</p>
+          <div className="min-w-0">
+            <p className="font-medium text-gray-900 dark:text-white text-xs sm:text-base truncate">{marketToken.symbol.toUpperCase()}</p>
+            <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">{marketToken.name}</p>
           </div>
         </div>
       </td>
-      <td className="px-4 py-4 text-right text-gray-900 dark:text-white">
+      <td className="px-2 sm:px-4 py-2 sm:py-4 text-right text-gray-900 dark:text-white text-xs sm:text-base">
         {portfolioToken.quantity.toFixed(4)}
       </td>
-      <td className="px-4 py-4 text-right">
+      <td className="hidden sm:table-cell px-4 py-4 text-right">
         <p className="text-gray-900 dark:text-white">{formatPrice(marketToken.current_price)}</p>
         <p className={`text-sm ${getPriceChangeColor(priceChange)}`}>
           {priceChange > 0 ? '+' : ''}{formatPercentage(priceChange)}
         </p>
       </td>
-      <td className="px-4 py-4 text-right text-gray-600 dark:text-gray-400">
+      <td className="hidden md:table-cell px-4 py-4 text-right text-gray-600 dark:text-gray-400">
         {formatPrice(portfolioToken.buyPrice)}
       </td>
-      <td className="px-4 py-4">
+      <td className="hidden lg:table-cell px-4 py-4">
         <MiniChart 
           data={marketToken.sparkline_in_7d.price.slice(-24)} 
           color={priceChange >= 0 ? '#10b981' : '#ef4444'} 
         />
       </td>
-      <td className="px-4 py-4 text-right text-gray-900 dark:text-white">
+      <td className="hidden md:table-cell px-4 py-4 text-right text-gray-900 dark:text-white">
         {formatCurrency(totalCost)}
       </td>
-      <td className="px-4 py-4 text-right text-gray-900 dark:text-white">
+      <td className="px-2 sm:px-4 py-2 sm:py-4 text-right text-gray-900 dark:text-white text-xs sm:text-base">
         {formatCurrency(currentValue)}
       </td>
-      <td className="px-4 py-4 text-right">
-        <p className={`font-medium ${getPriceChangeColor(profitLoss)}`}>
+      <td className="px-2 sm:px-4 py-2 sm:py-4 text-right">
+        <p className={`font-medium text-xs sm:text-base ${getPriceChangeColor(profitLoss)}`}>
           {profitLoss >= 0 ? '+' : ''}{formatCurrency(Math.abs(profitLoss))}
         </p>
-        <p className={`text-sm ${getPriceChangeColor(profitLoss)}`}>
+        <p className={`text-xs ${getPriceChangeColor(profitLoss)}`}>
           ({profitLoss >= 0 ? '+' : ''}{formatPercentage(profitLossPercentage)})
         </p>
       </td>
-      <td className="px-4 py-4">
-        <div className="flex items-center justify-end space-x-2">
+      <td className="px-2 sm:px-4 py-2 sm:py-4">
+        <div className="flex items-center justify-end space-x-1">
           <button
             onClick={() => onEdit(portfolioToken)}
-            className="p-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="p-1 sm:p-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             aria-label="Edit"
           >
-            <Edit2 className="w-4 h-4" />
+            <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
           </button>
           <button
             onClick={() => onRemove(portfolioToken.id)}
-            className="p-1.5 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 transition-colors"
+            className="p-1 sm:p-1.5 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 transition-colors"
             aria-label="Remove"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
           </button>
         </div>
       </td>
