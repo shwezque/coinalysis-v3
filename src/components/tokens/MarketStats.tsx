@@ -179,7 +179,7 @@ const MarketStats: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3 mb-3 md:mb-4">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="bg-white dark:bg-gray-800 rounded-lg p-3 animate-pulse">
             <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
@@ -234,16 +234,16 @@ const MarketStats: React.FC = () => {
   });
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3 mb-3 md:mb-4">
       {/* Market Cap */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm transition-all">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-2 md:p-3 shadow-sm transition-all">
         <div className="flex items-center justify-between mb-2">
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-blue-500" />
-              <p className="text-xs text-gray-600 dark:text-gray-400">Market Cap</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">Market Cap</p>
             </div>
-            <p className="text-lg font-bold text-gray-900 dark:text-white">
+            <p className="text-sm md:text-lg font-bold text-gray-900 dark:text-white">
               {formatCurrency(typedStats?.total_market_cap || 0)}
             </p>
             <p className={`text-xs ${getPriceChangeColor(typedStats?.market_cap_change_percentage_24h_usd || 0)}`}>
@@ -262,20 +262,20 @@ const MarketStats: React.FC = () => {
             AI
           </button>
         </div>
-        <div className="h-20 mt-2 cursor-pointer hover:opacity-90 transition-opacity">
+        <div className="h-16 md:h-20 mt-2 cursor-pointer hover:opacity-90 transition-opacity">
           <Line data={generateChartData(marketCapHistory, '#3b82f6', 'Market Cap')} options={chartOptions} />
         </div>
       </div>
 
       {/* 24h Volume */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm transition-all">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-2 md:p-3 shadow-sm transition-all">
         <div className="flex items-center justify-between mb-2">
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-green-500" />
-              <p className="text-xs text-gray-600 dark:text-gray-400">24h Volume</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">24h Volume</p>
             </div>
-            <p className="text-lg font-bold text-gray-900 dark:text-white">
+            <p className="text-sm md:text-lg font-bold text-gray-900 dark:text-white">
               {formatCurrency(typedStats?.total_volume || 0)}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -293,20 +293,20 @@ const MarketStats: React.FC = () => {
             AI
           </button>
         </div>
-        <div className="h-20 mt-2 cursor-pointer hover:opacity-90 transition-opacity">
+        <div className="h-16 md:h-20 mt-2 cursor-pointer hover:opacity-90 transition-opacity">
           <Line data={generateChartData(volumeHistory, '#10b981', 'Volume')} options={chartOptions} />
         </div>
       </div>
 
       {/* BTC Dominance */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm transition-all">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-2 md:p-3 shadow-sm transition-all">
         <div className="flex items-center justify-between mb-2">
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-yellow-500" />
-              <p className="text-xs text-gray-600 dark:text-gray-400">BTC Dominance</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">BTC Dominance</p>
             </div>
-            <p className="text-lg font-bold text-gray-900 dark:text-white">
+            <p className="text-sm md:text-lg font-bold text-gray-900 dark:text-white">
               {formatPercentage(typedStats?.market_cap_percentage.btc || 0)}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -324,20 +324,20 @@ const MarketStats: React.FC = () => {
             AI
           </button>
         </div>
-        <div className="h-20 mt-2 cursor-pointer hover:opacity-90 transition-opacity">
+        <div className="h-16 md:h-20 mt-2 cursor-pointer hover:opacity-90 transition-opacity">
           <Doughnut data={dominanceData} options={dominanceOptions} />
         </div>
       </div>
 
       {/* Fear & Greed Index */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm transition-all">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-2 md:p-3 shadow-sm transition-all">
         <div className="flex items-center justify-between mb-2">
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4" style={{ color: getFearGreedColor(fearGreedValue) }} />
-              <p className="text-xs text-gray-600 dark:text-gray-400">Fear & Greed</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">Fear & Greed</p>
             </div>
-            <p className="text-lg font-bold text-gray-900 dark:text-white">
+            <p className="text-sm md:text-lg font-bold text-gray-900 dark:text-white">
               {fearGreedValue}
             </p>
             <p className={`text-xs font-medium`} style={{ color: getFearGreedColor(fearGreedValue) }}>
@@ -362,7 +362,7 @@ const MarketStats: React.FC = () => {
               style={{ left: `${fearGreedValue}%`, marginLeft: '-8px' }}
             />
           </div>
-          <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+          <div className="hidden md:flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
             <span>0</span>
             <span>Fear</span>
             <span>Neutral</span>

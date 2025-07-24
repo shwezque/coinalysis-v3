@@ -21,12 +21,12 @@ const CategoriesPage: React.FC = () => {
 
   const getIcon = (iconName: string) => {
     const iconMap: { [key: string]: React.ReactNode } = {
-      'Coins': <Coins className="w-6 h-6" />,
-      'Brain': <Brain className="w-6 h-6" />,
-      'Layers': <Layers className="w-6 h-6" />,
-      'Image': <Image className="w-6 h-6" />,
-      'Building': <Building className="w-6 h-6" />,
-      'Globe': <Globe className="w-6 h-6" />,
+      'Coins': <Coins className="w-5 h-5 md:w-6 md:h-6" />,
+      'Brain': <Brain className="w-5 h-5 md:w-6 md:h-6" />,
+      'Layers': <Layers className="w-5 h-5 md:w-6 md:h-6" />,
+      'Image': <Image className="w-5 h-5 md:w-6 md:h-6" />,
+      'Building': <Building className="w-5 h-5 md:w-6 md:h-6" />,
+      'Globe': <Globe className="w-5 h-5 md:w-6 md:h-6" />,
     };
     return iconMap[iconName] || <Coins className="w-6 h-6" />;
   };
@@ -69,22 +69,22 @@ const CategoriesPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+    <div className="container mx-auto px-3 md:px-4 py-2 md:py-4">
+      <div className="mb-3 md:mb-4">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
           Cryptocurrency Categories
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
           Explore tokens by category and sector
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         {categories.map((category) => (
           <div
             key={category.id}
             onClick={() => navigate(`/categories/${category.id}`)}
-            className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+            className="bg-white dark:bg-gray-800 rounded-lg p-3 md:p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center space-x-3">

@@ -53,28 +53,28 @@ const PortfolioPage: React.FC = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+    <div className="container mx-auto px-3 md:px-4 py-2 md:py-4">
+      <div className="mb-3 md:mb-4">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
           My Portfolio
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Track your cryptocurrency investments and performance
+        <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+          Track your cryptocurrency investments
         </p>
       </div>
 
       {portfolioTokens.length > 0 && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
             {stats.map((stat) => (
-              <div key={stat.label} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+              <div key={stat.label} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 md:p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</p>
-                    <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+                    <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">{stat.label}</p>
+                    <p className={`text-sm md:text-xl font-bold ${stat.color}`}>{stat.value}</p>
                   </div>
-                  <div className={`p-3 rounded-lg ${stat.bgColor}`}>
-                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                  <div className={`p-2 md:p-3 rounded-lg ${stat.bgColor}`}>
+                    <stat.icon className={`w-4 h-4 md:w-6 md:h-6 ${stat.color}`} />
                   </div>
                 </div>
               </div>

@@ -26,7 +26,7 @@ function App() {
                 <Router>
                   <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
                     <Header />
-                    <main className="pt-16 flex-1 pb-8">
+                    <main className="pt-24 md:pt-16 flex-1 pb-8">
                       <Routes>
                         <Route path="/" element={<TokensPage />} />
                         <Route path="/categories" element={<CategoriesPage />} />

@@ -13,7 +13,7 @@ const Header: React.FC = () => {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-14 md:h-16">
             {/* Logo and Desktop Navigation */}
             <div className="flex items-center space-x-8">
               <div className="flex items-center space-x-2">
@@ -22,7 +22,7 @@ const Header: React.FC = () => {
                   alt="Coinalysis" 
                   className="w-8 h-8 object-contain"
                 />
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Coinalysis</h1>
+                <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">Coinalysis</h1>
               </div>
               <div className="hidden lg:block">
                 <Navigation />
@@ -49,7 +49,7 @@ const Header: React.FC = () => {
           </div>
 
           {/* Mobile Search Bar */}
-          <div className="md:hidden pb-3">
+          <div className="md:hidden pb-2">
             <SearchBar />
           </div>
         </div>

@@ -61,7 +61,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onTokenSelect }) => {
             onChange={(e) => handleSearch(e.target.value)}
             onFocus={() => setIsFocused(true)}
             placeholder="Search tokens..."
-            className="pl-10 pr-10 py-2 w-64 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            className="pl-10 pr-10 py-2 w-full md:w-64 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
           />
           {searchQuery && (
             <button
