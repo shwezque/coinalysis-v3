@@ -54,7 +54,7 @@ const PortfolioPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-3 md:px-4 py-2 md:py-4">
-      <div className="mb-3 md:mb-4">
+      <div className="mb-3 md:mb-4 mt-4 md:mt-6">
         <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
           My Portfolio
         </h1>
