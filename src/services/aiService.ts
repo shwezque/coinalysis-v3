@@ -1,6 +1,6 @@
 import { Token, AIInsight } from '../types';
 
-// Mock AI service - in production, this would call OpenAI/Claude API
+// AI insights service
 export const aiService = {
   async generateInsights(token: Token): Promise<AIInsight> {
     // Simulate API delay
